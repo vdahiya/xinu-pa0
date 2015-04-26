@@ -1,0 +1,108 @@
+1)
+
+XINU's memory layout
+
+
+	_________________________________	0 - start of memory
+	|				|
+	|	TEXT Segment		|
+	|				|
+	|				|
+	|_______________________________|	35138 or 0x008942 - etext
+	|				|
+	|	DATA Segment		|
+	|_______________________________|	42304 or 0x00a540 - edata
+	|				|
+	|	BSS Segment		|
+	|_______________________________|	67320 or 0x0106f8 - end
+	|				|
+	|				|
+	|				|
+	|	FREE SPACE		|
+	|				|
+	|				|
+	|_______________________________|	16769020 or 0xffcffc- Stack limit of 'main' process
+	|				|
+	|	main process stack	|
+	|				|
+	|_______________________________|	16773112 or 0xffeff8  - Stack base of 'main' process
+	|				|
+	|_______________________________|	16773120 or 0xfff000 - stack limit of 'prnull' process
+	|	prnull process stack	|
+	|				|
+	|				|
+	|_______________________________|	16777212 or 0xfffffc- stack base of 'prnull' process
+	|_______________________________|	16777216 - end of memory
+	
+	
+	
+	2)
+
+   Address of the top of the run-time stack right after making the printtos() fun call is 0xffefb8
+   Address of top of the run-time stack right before getting into the printtos() fun call is 0xffefc0
+   
+   So, Difference in stack top address right before and after calling printtos() is 8 bytes.
+
+
+	_________________________________	0xffefb8
+	|				|
+	|  Stack base			|
+	|	 of caller method(Main)	|
+	|_______________________________|	0xffefbc
+	|				|
+	|   Return Address		|
+	|   after finishing printtos	|
+	|_______________________________|	0xffefc0
+	
+	
+	3)
+	
+	Ans. "Little Endian"
+
+Pseudo code
+{
+unsigned int int_a =1;
+char *char_ptr = (char*) &int_a;
+if (*c)
+{
+Little endian
+}
+else
+{
+Big Endian
+}
+} // end of Pseudo code
+
+since the size of character is 1 byte when the character pointer is deferenced
+it will contain only the first byte of the integer. If the machine is little
+endian then *c will be 1 because last byte is stored first and if machine is bigendian then *c wil be 0.
+
+
+4)
+
+Mov- This assembly instruction Copies the first operand (source operand) to the second operand (destination operand).
+The source operand can be an immediate value, general-purpose
+register, segment register, or memory location; the destination register can
+be a general-purpose register, segment register, or memory location.
+Both operands must be the same size, which can be a byte, a word, or a doubleword.
+
+Push- This instruction Pushes a value onto the stack. The number of bytes pushed is determined
+by the operand-size attribute of the instruction.
+
+pusha - Pushes the contents of the general-purpose registers onto the stack.
+The PUSHA( push all) instruction is intended for use when the operand-size attribute is 16.
+
+pop- Loads the value from the top of the stack to the location specified with
+the destination operand and then increments the stack pointer. The destination
+operand can be a general-purpose register, memory location, or segment register.
+
+popa - Pops the value from the top of the stack into the general-purpose registers. 
+The POPA instruction is intended for use when the operand-size attribute is 16.
+
+5)In a stack frame, local variables are stored below the top of the stack. In task 3, does your result show all the local variables
+ declared in your printtos function? 
+If not, can you explain that? (hint: try to disable the compiler optimization by specifing -O0 in your Makefile)
+
+No within the stack frame we cannot see the local variables which are just pushed and not used somewhere.
+This is due to the compiler optimization.
+
